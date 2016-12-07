@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 
 class CSVFile:
 	def __init__(self, filename):
@@ -8,6 +9,12 @@ class CSVFile:
 		
 		self.__readFile()
 		self.csv.close()
+		
+	def getIndexOfKey(self, key):
+		if key in self.headers:
+			return self.rows[0].getIndexOfKey(key)
+		else:
+			return -1
 		
 	def printHeaders(self):
 		print self.headers
@@ -24,6 +31,12 @@ class CSVFile:
 			return data
 		except:
 			return None
+		
+	def convertAllToType(self, key, typ, form=None):
+		for i in range(len(self.rows)):
+			self.rows[i].convert(key, typ, form)
+				
+				
 	
 	def __readFile(self):
 		#Row 1 contains headers
@@ -33,8 +46,10 @@ class CSVFile:
 		for values in csvreader:
 			row = {}
 			for i in range(len(values)):
+				if values[i] == '-':
+					values[i] = '0'
 				row[self.headers[i]] = values[i]
-			self.rows.append(row)
+			self.rows.append(Row(row))
 			
 		
 	def __getHeaders(self):
@@ -72,8 +87,26 @@ class Row:
 			self.__data.remove(key)
 		except:
 			pass
+	
+	def convert(self, key, typ, form=None):
+		if typ == datetime:
+			self.__data[key] = datetime.strptime(self.__data[key], form)
+		elif typ == int:
+			self.__data[key] = int(self.__data[key])
+		elif typ == float:
+			self.__data[key] = float(self.__data[key])
+			
+	def getIndexOfKey(self, key):
+		keys = self.__data.keys()
+		for i in range(len(keys)):
+			if key == keys[i]:
+				return i
+		return -1
 		
 	def __str__(self):
 		s = ' '.join(self.__data)
 		return s
+	
+	def __getitem__(self, key):
+		return self.get(key)
 	

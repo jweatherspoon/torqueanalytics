@@ -1,0 +1,19 @@
+Engine Coolant Temperature(°F):
+	Graph
+Engine RPM(rpm):
+	Graph
+	Max
+Fuel flow rate/minute(gal/min):
+	Graph
+Horsepower (At the wheels)(hp):
+	Max
+Miles Per Gallon(Instant)(mpg):
+	Graph
+Speed (OBD)(mph):
+	Graph
+	Max
+Throttle Position(Manifold)(%):
+	Graph
+	Max
+Torque(ft-lb):
+	Max

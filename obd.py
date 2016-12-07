@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import sys
 import time
+import os
 from datetime import datetime
 import xlsxwriter
 
@@ -47,7 +48,7 @@ def main():
 	if opts.profile:
 		profile = LoadProfile(opts.profile)
 	
-	filename = "datafiles/" + str(time.time()) + ".xlsx"
+	filename = "datafiles/" + os.path.basename(datafile.getFilename())[:-4] #Remove .csv from filename. Will be replaced by .xlsx
 	Analyze(filename, datafile, profile)
 		
 def LoadProfile(profileName):
@@ -145,23 +146,24 @@ def AnalyzeProfile(workbook, datasheet, csvfile, columns, profile):
 				calcsheet.write(calcrow, 1, max(data))
 				calcrow += 1
 			if command == "Graph":
-				tab = cleanup(heading)
-				chartsheets.append(workbook.add_chartsheet(tab.decode("utf-8")))
-				charts[cIndex] = workbook.add_chart({
-					"type": "scatter",
-					"subtype": "smooth",
-					"name": "Time v. " + heading
-				})
-				charts[cIndex].add_series({
-					"categories": ["Data", 0, 0, end, 0],
-					"values": ["Data", 0, columns[heading], end, columns[heading]]
-				})
-				charts[cIndex].set_legend({"none": True})
-				charts[cIndex].set_y_axis({"name": heading.decode("utf-8")})
-				charts[cIndex].set_x_axis({"name": "Device Time", "date_axis": True,
-										   "num_format": "MM/DD/YY HH:MM:SS"})
-				chartsheets[cIndex].set_chart(charts[cIndex])
-				cIndex += 1
+				if heading in columns.keys():
+					tab = cleanup(heading)
+					chartsheets.append(workbook.add_chartsheet(tab.decode("utf-8")))
+					charts[cIndex] = workbook.add_chart({
+						"type": "scatter",
+						"subtype": "smooth",
+						"name": "Time v. " + heading
+					})
+					charts[cIndex].add_series({
+						"categories": ["Data", 0, 0, end, 0],
+						"values": ["Data", 0, columns[heading], end, columns[heading]]
+					})
+					charts[cIndex].set_legend({"none": True})
+					charts[cIndex].set_y_axis({"name": heading.decode("utf-8")})
+					charts[cIndex].set_x_axis({"name": "Device Time", "date_axis": True,
+											   "num_format": "MM/DD/YY HH:MM:SS"})
+					chartsheets[cIndex].set_chart(charts[cIndex])
+					cIndex += 1
 				
 def WriteDatasheet(workbook, csvfile):
 	columns = {}

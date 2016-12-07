@@ -4,11 +4,15 @@ from datetime import datetime
 class CSVFile:
 	def __init__(self, filename):
 		self.csv = open(filename, "r")
+		self.filename = filename
 		self.headers = []
 		self.rows = []
 		
 		self.__readFile()
 		self.csv.close()
+		
+	def getFilename(self):
+		return self.filename
 		
 	def getIndexOfKey(self, key):
 		if key in self.headers:

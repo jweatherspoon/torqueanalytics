@@ -3,17 +3,26 @@ Engine Coolant Temperature(°F):
 Engine RPM(rpm):
 	Graph
 	Max
+	Average
 Fuel flow rate/minute(gal/min):
 	Graph
 Horsepower (At the wheels)(hp):
 	Max
+	Average
 Miles Per Gallon(Instant)(mpg):
 	Graph
+	Average
 Speed (OBD)(mph):
 	Graph
 	Max
+	Average
 Throttle Position(Manifold)(%):
 	Graph
 	Max
 Torque(ft-lb):
 	Max
+Miles Per Gallon(Long Term Average)(mpg):
+	Graph
+	Max
+	Average
+	Min

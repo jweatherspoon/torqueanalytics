@@ -15,6 +15,7 @@ class CSVFile:
 		return self.filename
 		
 	def getIndexOfKey(self, key):
+		#Return -1 if the given key is not in the list of headers
 		if key in self.headers:
 			return self.rows[0].getIndexOfKey(key)
 		else:
@@ -24,19 +25,22 @@ class CSVFile:
 		print self.headers
 		
 	def printRow(self, row):
+		#Only print the row if it is in the list of rows
 		if row < len(self.rows):
 			print self.rows[row]
 			
 	def getAllData(self, key):
+		#Return a list of all data in the csvfile with the given header
 		try:
 			data = []
 			for row in self.rows:
 				data.append(row.get(key))
 			return data
-		except:
+		except: #If not able, return Nonetype object
 			return None
 		
 	def convertAllToType(self, key, typ, form=None):
+		#Convert all values of the given key to given type (with given format)
 		for i in range(len(self.rows)):
 			self.rows[i].convert(key, typ, form)
 				
@@ -46,6 +50,7 @@ class CSVFile:
 		#Row 1 contains headers
 		self.__getHeaders()
 		
+		#Read the rest and store in row objects
 		csvreader = csv.reader(self.csv, delimiter=',')
 		for values in csvreader:
 			row = {}
@@ -57,21 +62,12 @@ class CSVFile:
 			
 		
 	def __getHeaders(self):
+		#Headers should be on first line. Get all characters until the \n
 		headers = self.csv.readline()[:-1]
 		headers = headers.split(',')
 		for i in range(len(headers)):
 			headers[i] = headers[i].lstrip()
 		self.headers = headers
-			
-	def __readLine(self):
-		try:
-			line = self.csv.readline()[:-1]
-			line = line.split(',')
-			for i in range(len(line)):
-				line[i] = line[i].lstrip()
-			return line
-		except:
-			return None
 		
 class Row:
 	def __init__(self, data):
@@ -93,6 +89,11 @@ class Row:
 			pass
 	
 	def convert(self, key, typ, form=None):
+		'''
+		Convert a value in the row to the given type. Currently supported
+		types are datetime.datetime, int, and float. form parameter is
+		only used for the datetime.datetime conversion.
+		'''
 		if typ == datetime:
 			self.__data[key] = datetime.strptime(self.__data[key], form)
 		elif typ == int:
@@ -101,6 +102,9 @@ class Row:
 			self.__data[key] = float(self.__data[key])
 			
 	def getIndexOfKey(self, key):
+		'''
+		Find the index of a given key. Return -1 if not found.
+		'''
 		keys = self.__data.keys()
 		for i in range(len(keys)):
 			if key == keys[i]:

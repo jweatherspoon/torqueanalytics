@@ -2,6 +2,8 @@
 import sys
 import time
 import os
+import shutil
+import zipfile
 from datetime import datetime
 import xlsxwriter
 
@@ -43,7 +45,8 @@ def main():
 		ExtractCSV()
 		name = glob.glob("data/*.csv")
 		datafile = CSVFile(name[0])
-		os.system("rm -rf data")
+		shutil.rmtree("data")
+		#os.system("rm -rf data")
 	else:
 		parser.print_help()
 		sys.exit(1)

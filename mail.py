@@ -3,9 +3,10 @@ import imaplib
 import mimetypes
 import os
 import glob
+import zipfile
 
-EMAIL = #Put gmail address here. Must enable less secure app access to use this script
-PASS = #Put gmail account password here
+EMAIL = #Insert GMAIL address here. Ensure less secure apps access is enabled
+PASS = #Put gmail password here
 
 def GetMostRecentEmail():
 	M = imaplib.IMAP4_SSL('imap.gmail.com')
@@ -60,8 +61,13 @@ def save_attachment(msg, download_folder="datafiles/"):
         return att_path
 	
 def ExtractCSV():
-	os.system("unzip datafiles/*.zip")
-	os.system("rm -rf datafiles/*.zip")
+	zips = glob.glob("datafiles/*.zip")
+	for f in zips:
+		z = zipfile.ZipFile(f)
+		z.extractall() #Extract to data/
+		os.remove(f)
+	#os.system("unzip datafiles/*.zip")
+	#os.system("rm -rf datafiles/*.zip")
 	
 	
 	

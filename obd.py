@@ -175,7 +175,9 @@ def AnalyzeProfile(workbook, datasheet, csvfile, columns, profile):
 			if "Max" in profile[heading]:
 				calcsheet.write(parameters[heading], 1, max(data))				
 			if "Min" in profile[heading]:
-				calcsheet.write(parameters[heading], 2, min(data))
+				temp = [val for val in data if val != 0] #Remove all 0s from the list
+				if len(temp):
+					calcsheet.write(parameters[heading], 2, min(temp))
 			if "Avg" in profile[heading] or "Average" in profile[heading]:
 				calcsheet.write(parameters[heading], 3, mean(data))
 			if "Graph" in profile[heading]:

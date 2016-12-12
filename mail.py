@@ -5,8 +5,8 @@ import os
 import glob
 import zipfile
 
-EMAIL = #Insert GMAIL address here. Ensure less secure apps access is enabled
-PASS = #Put gmail password here
+EMAIL = #Put gmail address here. Ensure access for less secure apps is enabled
+PASS = #put password here
 
 def GetMostRecentEmail():
 	M = imaplib.IMAP4_SSL('imap.gmail.com')
@@ -21,19 +21,33 @@ def GetMostRecentEmail():
 	if rv != 'OK':
 		return
 	
-	#Get # emails
-	rv, data = M.search(None, "ALL")
-	if rv != 'OK':
+	rv, data = M.search(None, "(UNSEEN)")
+	if rv != "OK":
 		return
 	
-	#data is the number of the last email
-	data = data[0].split()[-1:]
-	rv, data = M.fetch(data[0], '(RFC822)')
-	if rv != 'OK':
-		return
-	
-	msg = email.message_from_string(data[0][1])
-	save_attachment(msg)
+	if data[0] != '':
+		data = data[0].split()
+		for num in data:
+			rv, em = M.fetch(num, "(RFC822)")
+			if rv != 'OK':
+				continue
+			msg = email.message_from_string(em[0][1])
+			save_attachment(msg)
+	else:
+		#Get # emails
+		rv, data = M.search(None, "ALL")
+		if rv != 'OK':
+			return
+
+		#data is the number of the last email
+		data = data[0].split()[-1:]
+		rv, data = M.fetch(data[0], '(RFC822)')
+		if rv != 'OK':
+			return
+
+		msg = email.message_from_string(data[0][1])
+		save_attachment(msg)
+		
 	M.close()
 	M.logout()
 	

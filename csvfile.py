@@ -94,13 +94,16 @@ class Row:
 		types are datetime.datetime, int, and float. form parameter is
 		only used for the datetime.datetime conversion.
 		'''
-		if typ == datetime:
-			self.__data[key] = datetime.strptime(self.__data[key], form)
-		elif typ == int:
-			self.__data[key] = int(self.__data[key])
-		elif typ == float:
-			self.__data[key] = float(self.__data[key])
-			
+		try:
+			if typ == datetime:
+				self.__data[key] = datetime.strptime(self.__data[key], form)
+			elif typ == int:
+				self.__data[key] = int(self.__data[key])
+			elif typ == float:
+				self.__data[key] = float(self.__data[key])
+		except:
+			pass
+		
 	def getIndexOfKey(self, key):
 		'''
 		Find the index of a given key. Return -1 if not found.

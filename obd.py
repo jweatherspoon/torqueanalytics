@@ -12,7 +12,7 @@ from optparse import OptionParser
 from csvfile import *
 from mail import *
 
-DATE_FORMAT = "%d-%b-%Y %H:%M:%S.%f"
+DATE_FORMAT = '%d-%b-%Y %H:%M:%S.%f'
 
 def main():
 	
@@ -36,30 +36,32 @@ def main():
 	opts, args = parser.parse_args()
 	datafile = None
 	
-	#Get the corresponding file from the argument. local file has priority over email.
-	#If neither file nor email, print help message. One is required.
-	if opts.file:
-		datafile = CSVFile(opts.file)
-	elif opts.email:
-		GetMostRecentEmail()
-		ExtractCSV()
-		name = glob.glob("data/*.csv")
-		datafile = CSVFile(name[0])
-		shutil.rmtree("data")
-		#os.system("rm -rf data")
-	else:
-		parser.print_help()
-		sys.exit(1)
-	
 	#Attempt to load a profile if one is given
 	profile = None
 	if opts.profile:
 		profile = LoadProfile(opts.profile)
 	
-	#Use the same filename as the .csv just change to .xlsx
-	#Then analyze the file. (graph / calculate)
-	filename = "datafiles/" + os.path.basename(datafile.getFilename())[:-4] #Remove .csv from filename. Will be replaced by .xlsx
-	Analyze(filename, datafile, profile)
+	#Get the corresponding file from the argument. local file has priority over email.
+	#If neither file nor email, print help message. One is required.
+	if opts.file:
+		datafile = CSVFile(opts.file)
+		
+		#Use the same filename as the .csv just change to .xlsx
+		#Then analyze the file. (graph / calculate)
+		filename = "datafiles/" + os.path.basename(datafile.getFilename())[:-4] #Remove .csv from filename. Will be replaced by .xlsx
+		Analyze(filename, datafile, profile)
+	elif opts.email:
+		GetMostRecentEmail()
+		ExtractCSV()
+		name = glob.glob("data/*.csv")
+		for f in name:
+			datafile = CSVFile(f)
+			filename = "datafiles/" + os.path.basename(datafile.getFilename())[:-4]
+			Analyze(filename, datafile, profile)
+		shutil.rmtree("data")
+	else:
+		parser.print_help()
+		sys.exit(1)
 		
 		
 def LoadProfile(profileName):

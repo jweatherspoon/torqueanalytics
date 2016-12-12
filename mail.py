@@ -79,9 +79,8 @@ def ExtractCSV():
 	for f in zips:
 		z = zipfile.ZipFile(f)
 		z.extractall() #Extract to data/
+		z.close()
 		os.remove(f)
-	#os.system("unzip datafiles/*.zip")
-	#os.system("rm -rf datafiles/*.zip")
 	
 	
 	
